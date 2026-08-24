@@ -1,0 +1,53 @@
+# CyberCordNow — public landing & distribution repo
+# Primary CyberCord source stays private; this repo carries only the
+# README, release assets (server container + client binaries), and media.
+
+# --- OS noise ---
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+desktop.ini
+
+# --- Editor / tooling state ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.history/
+
+# --- Local scratch / working notes (never publish) ---
+NOTES.md
+TODO.md
+drafts/
+scratch/
+
+# --- Secrets (defense in depth: nothing secret should ever live here,
+#     but ignore the common shapes anyway) ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+
+# --- Build output, if we ever stage local release assembly ---
+dist/
+out/
+release/
+*.dmg
+*.zip
+*.exe
+*.msi
+*.deb
+*.pkg.tar.zst
+*.AppImage
+*.sig
+*.sbom
+
+# --- Container artifacts ---
+*.tar
+docker-build/

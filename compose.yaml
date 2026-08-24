@@ -1,0 +1,57 @@
+name: cybercord
+
+services:
+  cybercord:
+    image: "${CYBERCORD_IMAGE:-ghcr.io/ramborogers/cybercord-server:0.1.2}"
+    platform: linux/amd64
+    restart: unless-stopped
+    environment:
+      CYBERCORD_HTTP_ADDRESS: 0.0.0.0:8080
+      CYBERCORD_DATA_DIR: /var/lib/cybercord
+      CYBERCORD_REGISTRATION_MODE: invite
+      CYBERCORD_SESSION_TTL: never
+      CYBERCORD_SECURE_COOKIES: "true"
+      CYBERCORD_TRUSTED_PROXY_CIDRS: "${CADDY_INTERNAL_IP:-172.30.239.2}/32"
+    volumes:
+      - cybercord-data:/var/lib/cybercord
+    networks:
+      backend:
+        ipv4_address: "${CYBERCORD_INTERNAL_IP:-172.30.239.3}"
+    security_opt:
+      - no-new-privileges:true
+
+  caddy:
+    image: caddy:2.11-alpine
+    restart: unless-stopped
+    depends_on:
+      - cybercord
+    environment:
+      CYBERCORD_DOMAIN: "${CYBERCORD_DOMAIN:?Set CYBERCORD_DOMAIN in .env}"
+      ACME_EMAIL: "${ACME_EMAIL:?Set ACME_EMAIL in .env}"
+    ports:
+      - "${CYBERCORD_HTTP_PORT:-80}:80"
+      - "${CYBERCORD_HTTPS_PORT:-443}:443"
+      - "${CYBERCORD_HTTPS_PORT:-443}:443/udp"
+    volumes:
+      - ./caddy:/etc/caddy:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    networks:
+      edge:
+      backend:
+        ipv4_address: "${CADDY_INTERNAL_IP:-172.30.239.2}"
+    security_opt:
+      - no-new-privileges:true
+
+networks:
+  edge:
+  backend:
+    internal: true
+    ipam:
+      config:
+        - subnet: "${CYBERCORD_INTERNAL_SUBNET:-172.30.239.0/24}"
+
+volumes:
+  cybercord-data:
+  caddy-data:
+  caddy-config:

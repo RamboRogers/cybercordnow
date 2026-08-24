@@ -1,0 +1,8 @@
+{
+	email {$ACME_EMAIL}
+}
+
+{$CYBERCORD_DOMAIN} {
+	encode zstd gzip
+	reverse_proxy cybercord:8080
+}
