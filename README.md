@@ -76,7 +76,7 @@ docker run -d \
   --name cybercord \
   -p 127.0.0.1:8080:8080 \
   -v cybercord-data:/var/lib/cybercord \
-  ghcr.io/ramborogers/cybercord-server:0.1.2
+  ghcr.io/ramborogers/cybercord-server:0.1.3
 ```
 
 1. Open <http://localhost:8080>.
@@ -122,7 +122,7 @@ Edit `.env` and set at least:
 ```dotenv
 CYBERCORD_DOMAIN=chat.example.com
 ACME_EMAIL=you@example.com
-CYBERCORD_IMAGE=ghcr.io/ramborogers/cybercord-server:0.1.2
+CYBERCORD_IMAGE=ghcr.io/ramborogers/cybercord-server:0.1.3
 ```
 
 The internal-network values normally need no changes. If Docker reports an overlapping address pool, choose another private `/24` subnet and keep both internal IPs inside it and distinct from each other.
@@ -163,6 +163,8 @@ To upgrade, change `CYBERCORD_IMAGE` in `.env` to the desired release, then run:
 docker compose pull
 docker compose up -d
 ```
+
+The versioned `ghcr.io/ramborogers/cybercord-server:0.1.3` tag is recommended for repeatable deployments. `ghcr.io/ramborogers/cybercord-server:latest` tracks the newest public server release.
 
 View status and logs with `docker compose ps` and `docker compose logs`. `docker compose down` removes the containers and networks but preserves the named data and certificate volumes. **Do not run `docker compose down -v` unless you intend to delete the CyberCord database and Caddy's TLS state.**
 
@@ -218,7 +220,7 @@ The browser interface is all you need — but native desktop clients add a serve
 | Debian / Ubuntu (amd64) | [DEB](https://github.com/RamboRogers/cybercordnow/releases/download/v0.1.2/CyberCord-Desktop-Debian-amd64.deb) | Native Debian package |
 | Arch Linux (x86_64) | [PKG.TAR.ZST](https://github.com/RamboRogers/cybercordnow/releases/download/v0.1.2/CyberCord-Desktop-Arch-x86_64.pkg.tar.zst) | Native pacman package |
 
-Current release: [`v0.1.2`](https://github.com/RamboRogers/cybercordnow/releases/tag/v0.1.2) · [SHA-256 checksums](https://github.com/RamboRogers/cybercordnow/releases/download/v0.1.2/SHA256SUMS.txt)
+Current server release: [`v0.1.3`](https://github.com/RamboRogers/cybercordnow/releases/tag/v0.1.3) · Current desktop release: [`v0.1.2`](https://github.com/RamboRogers/cybercordnow/releases/tag/v0.1.2) · [Desktop SHA-256 checksums](https://github.com/RamboRogers/cybercordnow/releases/download/v0.1.2/SHA256SUMS.txt)
 
 First launch: **Servers → Add Server…**, enter your server URL, Connect.
 

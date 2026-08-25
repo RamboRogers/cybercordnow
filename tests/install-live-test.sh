@@ -24,7 +24,7 @@ trap cleanup EXIT INT TERM
 cat >"$INSTALL_DIR/.env" <<'ENV'
 CYBERCORD_DOMAIN=http://localhost
 ACME_EMAIL=test@example.com
-CYBERCORD_IMAGE=ghcr.io/ramborogers/cybercord-server:0.1.2
+CYBERCORD_IMAGE=ghcr.io/ramborogers/cybercord-server:0.1.3
 CYBERCORD_HTTP_PORT=0
 CYBERCORD_HTTPS_PORT=0
 CYBERCORD_INTERNAL_SUBNET=172.30.241.0/24

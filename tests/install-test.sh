@@ -79,7 +79,7 @@ cmp -s "$FIXTURE/caddy/Caddyfile" "$INSTALL_DIR/caddy/Caddyfile" || fail "Caddyf
 [[ "$(stat -f '%Lp' "$INSTALL_DIR/.env" 2>/dev/null || stat -c '%a' "$INSTALL_DIR/.env")" == "600" ]] || fail ".env mode is not 600"
 grep -qx 'CYBERCORD_DOMAIN=chat.example.com' "$INSTALL_DIR/.env" || fail "domain was not written"
 grep -qx 'ACME_EMAIL=owner@example.com' "$INSTALL_DIR/.env" || fail "ACME email was not written"
-grep -qx 'CYBERCORD_IMAGE=ghcr.io/ramborogers/cybercord-server:0.1.2' "$INSTALL_DIR/.env" || fail "default image was not written"
+grep -qx 'CYBERCORD_IMAGE=ghcr.io/ramborogers/cybercord-server:0.1.3' "$INSTALL_DIR/.env" || fail "default image was not written"
 [[ "$(wc -l <"$CURL_LOG" | tr -d ' ')" == "3" ]] || fail "installer did not download exactly three files"
 grep -q 'compose version' "$DOCKER_LOG" || fail "Docker Compose prerequisite was not checked"
 grep -q 'config --quiet' "$DOCKER_LOG" || fail "Compose config was not validated"
