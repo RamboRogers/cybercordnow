@@ -20,6 +20,14 @@ CyberCord is a self-hosted room platform that runs in **a single container from 
 
 It's also a poke in the eye 👁️ to everyone who wants to record you, your kids, or your friends. Conversations can dissolve on a timer, screen shares are never persisted, and server-side state stays on hardware you control.
 
+## ✦ 2.0 Highlights
+
+- **Opus room voice, less bandwidth** — clear, natural voice uses less bandwidth than prior voice delivery; supported clients receive a compatibility fallback where needed.
+- **Better live sharing on real-world connections** — efficient screen and camera video plus shared audio where supported, with a safe compatibility route otherwise.
+- **Quiet reconnects** — brief disconnects and rejoins do not create a distracting burst of leave/join sounds.
+- **Sturdier Linux desktop experience** — improved media compatibility, including NVIDIA and Wayland environments.
+- **Operator-safe rollout controls** — return voice and sharing changes to compatibility mode independently when needed.
+
 ---
 
 ## ✦ Why CyberCord
@@ -39,7 +47,7 @@ It's also a poke in the eye 👁️ to everyone who wants to record you, your ki
 - **Text chat with rich media support** — video, files, images — and emoji reactions
 - **Rooms with privacy settings** — public or private with explicit membership lists
 - **Dissolving chat** — auto-delete messages after X hours or days, attachments included
-- **Real room voice** — mix-minus server mixing, noise suppression, echo cancellation
+- **Clear room voice** — noise suppression and echo cancellation help conversations stay easy to follow
 - **One HTTPS endpoint for all app traffic** — text, files, voice, video, and screen share
 
 <p align="center">
@@ -76,7 +84,7 @@ docker run -d \
   --name cybercord \
   -p 127.0.0.1:8080:8080 \
   -v cybercord-data:/var/lib/cybercord \
-  ghcr.io/ramborogers/cybercord-server:0.1.3
+  ghcr.io/ramborogers/cybercord-server:2.0.0
 ```
 
 1. Open <http://localhost:8080>.
@@ -122,7 +130,7 @@ Edit `.env` and set at least:
 ```dotenv
 CYBERCORD_DOMAIN=chat.example.com
 ACME_EMAIL=you@example.com
-CYBERCORD_IMAGE=ghcr.io/ramborogers/cybercord-server:0.1.3
+CYBERCORD_IMAGE=ghcr.io/ramborogers/cybercord-server:2.0.0
 ```
 
 The internal-network values normally need no changes. If Docker reports an overlapping address pool, choose another private `/24` subnet and keep both internal IPs inside it and distinct from each other.
@@ -164,7 +172,7 @@ docker compose pull
 docker compose up -d
 ```
 
-The versioned `ghcr.io/ramborogers/cybercord-server:0.1.3` tag is recommended for repeatable deployments. `ghcr.io/ramborogers/cybercord-server:latest` tracks the newest public server release.
+The immutable, versioned `ghcr.io/ramborogers/cybercord-server:2.0.0` tag is recommended for repeatable deployments. `ghcr.io/ramborogers/cybercord-server:latest` tracks the newest verified public server release.
 
 View status and logs with `docker compose ps` and `docker compose logs`. `docker compose down` removes the containers and networks but preserves the named data and certificate volumes. **Do not run `docker compose down -v` unless you intend to delete the CyberCord database and Caddy's TLS state.**
 
@@ -215,12 +223,12 @@ The browser interface is all you need — but native desktop clients add a serve
 
 | Platform | Download | Notes |
 |---|---|---|
-| macOS (Apple Silicon) | [DMG](https://github.com/RamboRogers/cybercordnow/releases/download/v0.1.2/CyberCord-Desktop-macOS-Apple-Silicon.dmg) · [ZIP](https://github.com/RamboRogers/cybercordnow/releases/download/v0.1.2/CyberCord-Desktop-macOS-Apple-Silicon.zip) | Developer ID signed and notarized |
-| Windows x64 | [Setup EXE](https://github.com/RamboRogers/cybercordnow/releases/download/v0.1.2/CyberCord-Desktop-Windows-x64-setup.exe) · [MSI](https://github.com/RamboRogers/cybercordnow/releases/download/v0.1.2/CyberCord-Desktop-Windows-x64.msi) | Windows installers |
-| Debian / Ubuntu (amd64) | [DEB](https://github.com/RamboRogers/cybercordnow/releases/download/v0.1.2/CyberCord-Desktop-Debian-amd64.deb) | Native Debian package |
-| Arch Linux (x86_64) | [PKG.TAR.ZST](https://github.com/RamboRogers/cybercordnow/releases/download/v0.1.2/CyberCord-Desktop-Arch-x86_64.pkg.tar.zst) | Native pacman package |
+| macOS (Apple Silicon) | [DMG](https://github.com/RamboRogers/cybercordnow/releases/download/v0.1.2/CyberCord-Desktop-macOS-Apple-Silicon.dmg) · [ZIP](https://github.com/RamboRogers/cybercordnow/releases/download/v0.1.2/CyberCord-Desktop-macOS-Apple-Silicon.zip) | **Unchanged for 2.0** — Developer ID signed and notarized; remains supported because it loads the current server interface at runtime |
+| Windows x64 | [Setup EXE](https://github.com/RamboRogers/cybercordnow/releases/download/v2.0.0/CyberCord-Desktop-Windows-x64-setup.exe) · [MSI](https://github.com/RamboRogers/cybercordnow/releases/download/v2.0.0/CyberCord-Desktop-Windows-x64.msi) | Windows v2.0.0 installers |
+| Debian / Ubuntu (amd64) | [DEB](https://github.com/RamboRogers/cybercordnow/releases/download/v2.0.0/CyberCord-Desktop-Debian-amd64.deb) | Native Debian v2.0.0 package |
+| Arch Linux (x86_64) | [PKG.TAR.ZST](https://github.com/RamboRogers/cybercordnow/releases/download/v2.0.0/CyberCord-Desktop-Arch-x86_64.pkg.tar.zst) | Native Arch v2.0.0 package |
 
-Current server release: [`v0.1.3`](https://github.com/RamboRogers/cybercordnow/releases/tag/v0.1.3) · Current desktop release: [`v0.1.2`](https://github.com/RamboRogers/cybercordnow/releases/tag/v0.1.2) · [Desktop SHA-256 checksums](https://github.com/RamboRogers/cybercordnow/releases/download/v0.1.2/SHA256SUMS.txt)
+Release matrix: server + Windows/Linux desktop [`v2.0.0`](https://github.com/RamboRogers/cybercordnow/releases/tag/v2.0.0); macOS [`v0.1.2`](https://github.com/RamboRogers/cybercordnow/releases/tag/v0.1.2) retained. [Windows/Linux v2.0.0 SHA-256 checksums](https://github.com/RamboRogers/cybercordnow/releases/download/v2.0.0/SHA256SUMS.txt) · [Prior macOS SHA-256 checksums](https://github.com/RamboRogers/cybercordnow/releases/download/v0.1.2/SHA256SUMS.txt)
 
 First launch: **Servers → Add Server…**, enter your server URL, Connect.
 

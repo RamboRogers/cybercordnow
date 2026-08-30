@@ -10,7 +10,7 @@ Example:
 
 Environment overrides:
   CYBERCORD_INSTALL_DIR  Destination directory (default: $HOME/cybercord)
-  CYBERCORD_IMAGE        Server image (default: ghcr.io/ramborogers/cybercord-server:0.1.3)
+  CYBERCORD_IMAGE        Server image (default: ghcr.io/ramborogers/cybercord-server:2.0.0)
 USAGE
 }
 
@@ -22,7 +22,7 @@ USAGE
 DOMAIN="$1"
 EMAIL="$2"
 INSTALL_DIR="${CYBERCORD_INSTALL_DIR:-$HOME/cybercord}"
-CYBERCORD_IMAGE="${CYBERCORD_IMAGE:-ghcr.io/ramborogers/cybercord-server:0.1.3}"
+CYBERCORD_IMAGE="${CYBERCORD_IMAGE:-ghcr.io/ramborogers/cybercord-server:2.0.0}"
 RAW_BASE="${CYBERCORD_RAW_BASE:-https://raw.githubusercontent.com/RamboRogers/cybercordnow/main}"
 
 if [[ "${#DOMAIN}" -gt 253 ]] || ! [[ "$DOMAIN" =~ ^([A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?$ ]]; then
