@@ -2,7 +2,7 @@ name: cybercord
 
 services:
   cybercord:
-    image: "${CYBERCORD_IMAGE:-ghcr.io/ramborogers/cybercord-server:2.0.0}"
+    image: "${CYBERCORD_IMAGE:-ghcr.io/ramborogers/cybercord-server:2.1.0}"
     platform: linux/amd64
     restart: unless-stopped
     environment:
@@ -12,6 +12,9 @@ services:
       CYBERCORD_SESSION_TTL: never
       CYBERCORD_SECURE_COOKIES: "true"
       CYBERCORD_TRUSTED_PROXY_CIDRS: "${CADDY_INTERNAL_IP:-172.30.239.2}/32"
+      CYBERCORD_VOICE_RESILIENCE_ENABLED: "${CYBERCORD_VOICE_RESILIENCE_ENABLED:-true}"
+      CYBERCORD_VOICE_WORKER_ENABLED: "${CYBERCORD_VOICE_WORKER_ENABLED:-true}"
+      CYBERCORD_VOICE_FEEDBACK_ENABLED: "${CYBERCORD_VOICE_FEEDBACK_ENABLED:-true}"
     volumes:
       - cybercord-data:/var/lib/cybercord
     networks:

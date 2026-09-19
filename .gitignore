@@ -1,6 +1,6 @@
 # CyberCordNow — public landing & distribution repo
-# Primary CyberCord source stays private; this repo carries only the
-# README, release assets (server container + client binaries), and media.
+# This repo carries public docs, deployment examples, curated media,
+# and release metadata.
 
 # --- OS noise ---
 .DS_Store

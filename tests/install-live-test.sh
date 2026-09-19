@@ -24,7 +24,7 @@ trap cleanup EXIT INT TERM
 cat >"$INSTALL_DIR/.env" <<'ENV'
 CYBERCORD_DOMAIN=http://localhost
 ACME_EMAIL=test@example.com
-CYBERCORD_IMAGE=ghcr.io/ramborogers/cybercord-server:0.1.3
+CYBERCORD_IMAGE=ghcr.io/ramborogers/cybercord-server:2.1.0
 CYBERCORD_HTTP_PORT=0
 CYBERCORD_HTTPS_PORT=0
 CYBERCORD_INTERNAL_SUBNET=172.30.241.0/24
@@ -93,4 +93,4 @@ published_backend="$(docker inspect "${PROJECT}-cybercord-1" --format '{{json .N
 [[ "$published_backend" == '{}' ]]
 
 printf 'PASS: real installer launched CyberCord through Caddy\n'
-printf 'PASS: health, readiness, WebUI, and private backend verified\n'
+printf 'PASS: health, readiness, WebUI, and internal backend verified\n'
