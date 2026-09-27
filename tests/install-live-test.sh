@@ -82,12 +82,20 @@ done
 port_line="$(docker compose --env-file "$INSTALL_DIR/.env" -f "$INSTALL_DIR/compose.yaml" port caddy 80)"
 host_port="${port_line##*:}"
 base="http://localhost:$host_port"
-health="$("$REAL_CURL" -fsS "$base/healthz")"
-ready="$("$REAL_CURL" -fsS "$base/readyz")"
-root="$("$REAL_CURL" -fsS "$base/")"
-[[ "$health" == *'"status":"ok"'* ]]
-[[ "$ready" == *'"status":"ready"'* ]]
-[[ "$root" == *'<title>CyberCord</title>'* ]]
+http_ready=0
+for _attempt in $(seq 1 40); do
+  if health="$("$REAL_CURL" -fsS --max-time 2 "$base/healthz" 2>/dev/null)" && \
+    ready="$("$REAL_CURL" -fsS --max-time 2 "$base/readyz" 2>/dev/null)" && \
+    root="$("$REAL_CURL" -fsS --max-time 2 "$base/" 2>/dev/null)" && \
+    [[ "$health" == *'"status":"ok"'* ]] && \
+    [[ "$ready" == *'"status":"ready"'* ]] && \
+    [[ "$root" == *'<title>CyberCord</title>'* ]]; then
+    http_ready=1
+    break
+  fi
+  sleep 0.5
+done
+[[ "$http_ready" == 1 ]]
 
 published_backend="$(docker inspect "${PROJECT}-cybercord-1" --format '{{json .NetworkSettings.Ports}}')"
 [[ "$published_backend" == '{}' ]]
