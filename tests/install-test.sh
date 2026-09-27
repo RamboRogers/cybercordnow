@@ -79,7 +79,7 @@ cmp -s "$FIXTURE/caddy/Caddyfile" "$INSTALL_DIR/caddy/Caddyfile" || fail "Caddyf
 [[ "$(stat -f '%Lp' "$INSTALL_DIR/.env" 2>/dev/null || stat -c '%a' "$INSTALL_DIR/.env")" == "600" ]] || fail ".env mode is not 600"
 grep -qx 'CYBERCORD_DOMAIN=chat.example.com' "$INSTALL_DIR/.env" || fail "domain was not written"
 grep -qx 'ACME_EMAIL=owner@example.com' "$INSTALL_DIR/.env" || fail "ACME email was not written"
-grep -qx 'CYBERCORD_IMAGE=ghcr.io/ramborogers/cybercord-server:2.1.0' "$INSTALL_DIR/.env" || fail "default image was not written"
+grep -qx 'CYBERCORD_IMAGE=ghcr.io/ramborogers/cybercord-server:2.1.2' "$INSTALL_DIR/.env" || fail "default image was not written"
 grep -qx 'CYBERCORD_VOICE_RESILIENCE_ENABLED=true' "$INSTALL_DIR/.env" || fail "voice resilience default was not written"
 grep -qx 'CYBERCORD_VOICE_WORKER_ENABLED=true' "$INSTALL_DIR/.env" || fail "voice worker default was not written"
 grep -qx 'CYBERCORD_VOICE_FEEDBACK_ENABLED=true' "$INSTALL_DIR/.env" || fail "voice feedback default was not written"

@@ -88,10 +88,10 @@ highlight_bullet_count="$(awk '/^[-*+][[:space:]]+/ { count++ } END { print coun
 [[ "$highlight_bullet_count" == "5" ]] || \
   fail "README 2.1 Highlights must contain exactly five bullet entries"
 
-require_highlight_bullet "Settings Audio fixed low-bandwidth Opus and independent CPU Light" \
+require_highlight_bullet "Settings Audio selected low-bandwidth Opus and independent CPU Light" \
   'Voice[[:space:]]+bandwidth' \
   'Low[[:space:]]+bandwidth' \
-  'fixed' \
+  'selected' \
   '12[[:space:]]*kbps' \
   'Auto' \
   'CPU[[:space:]]+Light'
@@ -114,7 +114,7 @@ require_highlight_bullet "directed mentions, toast/ding, and opt-in notification
   'browser/OS'
 require_highlight_bullet "server-only 2.1 update with retained desktop downloads" \
   'server/WebUI' \
-  '2\.1\.0' \
+  '2\.1\.2' \
   '(reload|restart)' \
   'Windows/Linux[[:space:]]+desktop[[:space:]]+v2\.0\.0' \
   'macOS[[:space:]]+v0\.1\.2' \
@@ -141,9 +141,9 @@ why_line="$(awk '$0 == "## ✦ Why CyberCord" { print NR; exit }' "$README")"
   fail "2.1 Highlights must appear after the product introduction and before Why CyberCord"
 
 for required_phrase in \
-  'No client changes are needed: 2.1.0 is a server update.' \
+  'No client changes are needed: 2.1.2 is a server update.' \
   'Settings → Audio → Voice bandwidth' \
-  'Low bandwidth — fixed' \
+  'Low bandwidth — selected' \
   '12 kbps up and 12 kbps down' \
   'CPU Light is independent of bandwidth' \
   'voice diagnostics panel reports the current codec' \
@@ -158,10 +158,11 @@ for required_phrase in \
   'browser/OS notifications' \
   'app, tab, PWA, or desktop shell is running' \
   'CyberCord does not provide closed-app push notifications' \
-  'server binary defaults the advanced 2.1.0 voice-resilience gates to `false`' \
+  'server binary defaults the advanced 2.1.2 voice-resilience gates to `false`' \
   'Compose stack and `docker run` example set them to `true` explicitly' \
-  'Windows/Linux desktop v2.0.0 and macOS v0.1.2 downloads remain unchanged'; do
-  require_literal "$required_phrase" "2.1.0 user-facing release detail"
+  'Windows/Linux desktop v2.0.0 and macOS v0.1.2 downloads remain unchanged' \
+  'Voice protection can still remain visible for 30–60 seconds'; do
+  require_literal "$required_phrase" "2.1.2 user-facing release detail"
 done
 
 for internal_term in \
@@ -190,8 +191,8 @@ require_literal "$macos_release_base/CyberCord-Desktop-macOS-Apple-Silicon.zip" 
 if ! grep -Eqi -- 'macOS.*unchanged[[:space:]]+for[[:space:]]+2\.1|unchanged[[:space:]]+for[[:space:]]+2\.1.*macOS' "$README"; then
   fail "README must label the macOS client unchanged for 2.1"
 fi
-if grep -Eqi -- 'releases/download/v2\.1\.0/.*CyberCord-Desktop|CyberCord-Desktop[^[:cntrl:]]*2\.1\.0' "$README"; then
-  fail "README must not copy or relabel desktop downloads as v2.1.0"
+if grep -Eqi -- 'releases/download/v2\.1\.2/.*CyberCord-Desktop|CyberCord-Desktop[^[:cntrl:]]*2\.1\.2' "$README"; then
+  fail "README must not copy or relabel desktop downloads as v2.1.2"
 fi
 
 server_image='ghcr.io/ramborogers/cybercord-server'
@@ -200,12 +201,12 @@ versioned_count="$(printf '%s\n' "$versioned_references" | awk 'NF { count++ } E
 [[ "$versioned_count" == "3" ]] || fail "README must contain exactly three versioned server image references"
 while IFS= read -r versioned_reference; do
   [[ -z "$versioned_reference" ]] && continue
-  [[ "$versioned_reference" == "$server_image:2.1.0" ]] || \
-    fail "README server image reference must use v2.1.0: $versioned_reference"
+  [[ "$versioned_reference" == "$server_image:2.1.2" ]] || \
+    fail "README server image reference must use v2.1.2: $versioned_reference"
 done <<< "$versioned_references"
 
 if ! grep -Eqi -- 'latest[^[:cntrl:]]*(tracks?|means|refers[[:space:]]+to|points[[:space:]]+to|is)[^[:cntrl:]]*newest[^[:cntrl:]]*verified[^[:cntrl:]]*public[^[:cntrl:]]*server[[:space:]-]+release' "$README"; then
   fail "README must state that latest tracks the newest verified public server release"
 fi
 
-printf 'PASS: README exposes the public CyberCord v2.1.0 server-only release contract\n'
+printf 'PASS: README exposes the public CyberCord v2.1.2 server-only release contract\n'

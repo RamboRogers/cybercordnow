@@ -2,7 +2,7 @@ name: cybercord
 
 services:
   cybercord:
-    image: "${CYBERCORD_IMAGE:-ghcr.io/ramborogers/cybercord-server:2.1.0}"
+    image: "${CYBERCORD_IMAGE:-ghcr.io/ramborogers/cybercord-server:2.1.2}"
     platform: linux/amd64
     restart: unless-stopped
     environment:
