@@ -85,8 +85,12 @@ highlights="$(awk '
   }
 ' "$README")"
 highlight_bullet_count="$(awk '/^[-*+][[:space:]]+/ { count++ } END { print count + 0 }' <<< "$highlights")"
-[[ "$highlight_bullet_count" == "5" ]] || \
-  fail "README 2.1 Highlights must contain exactly five bullet entries"
+[[ "$highlight_bullet_count" == "6" ]] || \
+  fail "README 2.1 Highlights must contain exactly six bullet entries"
+
+require_highlight_bullet "member appearance themes and continuity" \
+  'Eleven complete themes' 'Settings[[:space:]]+→[[:space:]]+Appearance' \
+  'every member' 'voice' 'drafts'
 
 require_highlight_bullet "Settings Audio selected low-bandwidth Opus and independent CPU Light" \
   'Voice[[:space:]]+bandwidth' \
@@ -114,7 +118,7 @@ require_highlight_bullet "directed mentions, toast/ding, and opt-in notification
   'browser/OS'
 require_highlight_bullet "server-only 2.1 update with retained desktop downloads" \
   'server/WebUI' \
-  '2\.1\.2' \
+  '2\.1\.3' \
   '(reload|restart)' \
   'Windows/Linux[[:space:]]+desktop[[:space:]]+v2\.0\.0' \
   'macOS[[:space:]]+v0\.1\.2' \
@@ -141,7 +145,7 @@ why_line="$(awk '$0 == "## ✦ Why CyberCord" { print NR; exit }' "$README")"
   fail "2.1 Highlights must appear after the product introduction and before Why CyberCord"
 
 for required_phrase in \
-  'No client changes are needed: 2.1.2 is a server update.' \
+  'No client changes are needed: 2.1.3 is a server update.' \
   'Settings → Audio → Voice bandwidth' \
   'Low bandwidth — selected' \
   '12 kbps up and 12 kbps down' \
@@ -158,11 +162,29 @@ for required_phrase in \
   'browser/OS notifications' \
   'app, tab, PWA, or desktop shell is running' \
   'CyberCord does not provide closed-app push notifications' \
-  'server binary defaults the advanced 2.1.2 voice-resilience gates to `false`' \
+  'server binary defaults the advanced 2.1.3 voice-resilience gates to `false`' \
   'Compose stack and `docker run` example set them to `true` explicitly' \
   'Windows/Linux desktop v2.0.0 and macOS v0.1.2 downloads remain unchanged' \
-  'Voice protection can still remain visible for 30–60 seconds'; do
-  require_literal "$required_phrase" "2.1.2 user-facing release detail"
+  'do not pause screen/camera sharing or attachment uploads' \
+  'not synchronized across devices' \
+  'CyberCord is not end-to-end encrypted' \
+  'Argon2id and per-password salts' \
+  'Built-in MFA/2FA is not currently provided' \
+  'soft delete, not an immediate database purge' \
+  '90-day retention limit' \
+  'does not provide built-in encryption at rest' \
+  'This does not mean zero external connections' \
+  'Windows and Linux downloads are **unsigned**'; do
+  require_literal "$required_phrase" "2.1.3 user-facing release detail"
+done
+
+for obsolete_claim in \
+  'Voice protection can still remain visible for 30–60 seconds' \
+  'permanently deleted' \
+  'old conversations stop existing'; do
+  if grep -Fq -- "$obsolete_claim" "$README"; then
+    fail "README must not retain obsolete behavior or overpromise erasure: $obsolete_claim"
+  fi
 done
 
 for internal_term in \
@@ -191,8 +213,8 @@ require_literal "$macos_release_base/CyberCord-Desktop-macOS-Apple-Silicon.zip" 
 if ! grep -Eqi -- 'macOS.*unchanged[[:space:]]+for[[:space:]]+2\.1|unchanged[[:space:]]+for[[:space:]]+2\.1.*macOS' "$README"; then
   fail "README must label the macOS client unchanged for 2.1"
 fi
-if grep -Eqi -- 'releases/download/v2\.1\.2/.*CyberCord-Desktop|CyberCord-Desktop[^[:cntrl:]]*2\.1\.2' "$README"; then
-  fail "README must not copy or relabel desktop downloads as v2.1.2"
+if grep -Eqi -- 'releases/download/v2\.1\.3/.*CyberCord-Desktop|CyberCord-Desktop[^[:cntrl:]]*2\.1\.3' "$README"; then
+  fail "README must not copy or relabel desktop downloads as v2.1.3"
 fi
 
 server_image='ghcr.io/ramborogers/cybercord-server'
@@ -201,12 +223,12 @@ versioned_count="$(printf '%s\n' "$versioned_references" | awk 'NF { count++ } E
 [[ "$versioned_count" == "3" ]] || fail "README must contain exactly three versioned server image references"
 while IFS= read -r versioned_reference; do
   [[ -z "$versioned_reference" ]] && continue
-  [[ "$versioned_reference" == "$server_image:2.1.2" ]] || \
-    fail "README server image reference must use v2.1.2: $versioned_reference"
+  [[ "$versioned_reference" == "$server_image:2.1.3" ]] || \
+    fail "README server image reference must use v2.1.3: $versioned_reference"
 done <<< "$versioned_references"
 
 if ! grep -Eqi -- 'latest[^[:cntrl:]]*(tracks?|means|refers[[:space:]]+to|points[[:space:]]+to|is)[^[:cntrl:]]*newest[^[:cntrl:]]*verified[^[:cntrl:]]*public[^[:cntrl:]]*server[[:space:]-]+release' "$README"; then
   fail "README must state that latest tracks the newest verified public server release"
 fi
 
-printf 'PASS: README exposes the public CyberCord v2.1.2 server-only release contract\n'
+printf 'PASS: README exposes the public CyberCord v2.1.3 server-only release contract\n'

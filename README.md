@@ -18,20 +18,21 @@
 
 CyberCord is a self-hosted room platform that runs in **a single container from a single self-contained binary**. `docker run` it, open the URL, claim it — that's the whole setup. It serves its own interface to desktop and mobile browsers, offers optional native desktop clients, and carries text, files, voice, and video through **one HTTPS endpoint**.
 
-It's also a poke in the eye 👁️ to everyone who wants to record you, your kids, or your friends. Conversations can dissolve on a timer, screen shares are never persisted, and server-side state stays on hardware you control.
+Keep your community on infrastructure you control. Room history can expire on a timer, and CyberCord does not record live voice or screen/camera shares. Self-hosting is a trust choice, not end-to-end encryption: see [Security and privacy](#-security-and-privacy) for the protections and their limits.
 
 ## ✦ 2.1 Highlights
 
-**No client changes are needed: 2.1.2 is a server update.** Existing clients load the
+**No client changes are needed: 2.1.3 is a server update.** Existing clients load the
 updated interface from your server; reload or restart them after the server upgrade.
 
 - **Voice bandwidth you control** — Settings → Audio → Voice bandwidth includes **Low bandwidth — selected**, which holds Opus at 12 kbps up and 12 kbps down until you switch back to Auto; CPU Light stays an independent performance choice.
+- **Eleven complete themes** — Settings → Appearance is available to every member, with dark and light choices, clearer labeled controls, visible keyboard focus, and reduced-motion support. Switching themes keeps voice, sharing, and unsent drafts intact.
 - **More reliable voice on uneven links** — Auto starts at normal quality instead of staying in low quality after short conversations; voice diagnostics show the live codec, rate, and buffer state; brief recovery keeps Opus when the codec still works and preserves mute/deafen instead of treating every pause as a disconnect.
 - **Readable unread activity** — other rooms get an accessible neon shimmer, bounded unread/mention counts, and reduced-motion behavior that keeps counts available without animation.
 - **Directed mentions and notifications** — type `@username` to complete current-room members, then CyberCord can show a directed toast and rate-limited ding; Settings → Notifications can opt in to browser/OS notifications after permission.
-- **Server-only update** — update the server/WebUI image to 2.1.2 and reload or restart existing browser tabs, PWAs, or desktop shells; Windows/Linux desktop v2.0.0 and macOS v0.1.2 downloads remain unchanged.
+- **Server-only update** — update the server/WebUI image to 2.1.3 and reload or restart existing browser tabs, PWAs, or desktop shells; Windows/Linux desktop v2.0.0 and macOS v0.1.2 downloads remain unchanged.
 
-Voice protection can still remain visible for 30–60 seconds after a brief disturbance. It may temporarily pause sharing and uploads; this release does not change that recovery delay.
+Voice starts at normal quality without a bitrate ramp and can recover more promptly after verified healthy audio. Automatic audio adjustment and fixed Low bandwidth do not pause screen/camera sharing or attachment uploads. The old automatic “Protecting audio” control state is removed; stream details retain useful diagnostics. Automated and synthetic-browser results are not a physical-device, acoustic, Wi-Fi, or long-duration performance guarantee.
 
 ---
 
@@ -39,9 +40,9 @@ Voice protection can still remain visible for 30–60 seconds after a brief dist
 
 | | |
 |---|---|
-| 🧐 **Privacy first** | Dissolving chats delete themselves after hours or days — old conversations stop existing instead of leaking later |
+| 🧐 **Privacy first** | Optional room-history expiry and live-only media, with explicit retention and trust boundaries below |
 | 🔒 **Secure** | Argon2id passwords, opaque sessions, CSRF protection, flood control, invite-only by default |
-| 🧑‍💻 **Local** | Your server, your hardware, your data. No cloud, no telemetry, no account somewhere else |
+| 🧑‍💻 **Local** | Your server, your hardware, your data. No CyberCord cloud account or vendor analytics service required |
 | 📦 **Tiny** | One container, one self-contained Go binary, embedded browser UI — pure-Go SQLite, no external database |
 | 🔌 **One endpoint** | One HTTPS endpoint carries text, files, voice, video, and screen share through Caddy or another WebSocket-capable reverse proxy |
 | 🖥️ **Easy to use** | Built-in desktop/mobile browser interface; optional native desktop clients point at your server |
@@ -53,6 +54,7 @@ Voice protection can still remain visible for 30–60 seconds after a brief dist
 - **Rooms with privacy settings** — public or private with explicit membership lists
 - **Dissolving chat** — auto-delete messages after X hours or days, attachments included
 - **Clear room voice** — noise suppression, echo cancellation, fixed low-bandwidth Opus mode, and independent CPU Light help conversations stay easy to follow
+- **Personal appearance** — eleven complete dark/light themes, remembered locally per account and server, with dismissible lobby guidance
 - **One HTTPS endpoint for all app traffic** — text, files, voice, video, and screen share
 
 <p align="center">
@@ -92,14 +94,14 @@ docker run -d \
   -e CYBERCORD_VOICE_RESILIENCE_ENABLED=true \
   -e CYBERCORD_VOICE_WORKER_ENABLED=true \
   -e CYBERCORD_VOICE_FEEDBACK_ENABLED=true \
-  ghcr.io/ramborogers/cybercord-server:2.1.2
+  ghcr.io/ramborogers/cybercord-server:2.1.3
 ```
 
 1. Open <http://localhost:8080>.
 2. **Claim the server** — the first account created becomes the owner.
 3. Stop it later with `docker stop cybercord`.
 
-The localhost binding is deliberately not public. Browser microphone, camera, and screen capture work on browser-recognized localhost, but a remotely accessible server needs HTTPS. The server binary defaults the advanced 2.1.2 voice-resilience gates to `false`; the Compose stack and `docker run` example set them to `true` explicitly so the 2.1 voice controls are active. Set any of the three variables to `false` and restart to roll that layer back.
+The localhost binding is deliberately not public. Browser microphone, camera, and screen capture work on browser-recognized localhost, but a remotely accessible server needs HTTPS. The server binary defaults the advanced 2.1.3 voice-resilience gates to `false`; the Compose stack and `docker run` example set them to `true` explicitly so the 2.1 voice controls are active. Set any of the three variables to `false` and restart to roll that layer back.
 
 ### Public home server with Caddy
 
@@ -138,7 +140,7 @@ Edit `.env` and set at least:
 ```dotenv
 CYBERCORD_DOMAIN=chat.example.com
 ACME_EMAIL=you@example.com
-CYBERCORD_IMAGE=ghcr.io/ramborogers/cybercord-server:2.1.2
+CYBERCORD_IMAGE=ghcr.io/ramborogers/cybercord-server:2.1.3
 CYBERCORD_VOICE_RESILIENCE_ENABLED=true
 CYBERCORD_VOICE_WORKER_ENABLED=true
 CYBERCORD_VOICE_FEEDBACK_ENABLED=true
@@ -183,11 +185,11 @@ docker compose pull
 docker compose up -d
 ```
 
-The immutable, versioned `ghcr.io/ramborogers/cybercord-server:2.1.2` tag is recommended for repeatable deployments. `ghcr.io/ramborogers/cybercord-server:latest` tracks the newest verified public server release.
+The immutable, versioned `ghcr.io/ramborogers/cybercord-server:2.1.3` tag is recommended for repeatable deployments. `ghcr.io/ramborogers/cybercord-server:latest` tracks the newest verified public server release.
 
 View status and logs with `docker compose ps` and `docker compose logs`. `docker compose down` removes the containers and networks but preserves the named data and certificate volumes. **Do not run `docker compose down -v` unless you intend to delete the CyberCord database and Caddy's TLS state.**
 
-The server keeps its state in one SQLite data directory (`/var/lib/cybercord` in the container) — back that up and you've backed up everything.
+The server keeps its SQLite database and uploaded media under `/var/lib/cybercord`. Back up the whole directory consistently (stop the server for a simple cold backup), not just the database file. Keep deployment configuration and Caddy certificate state separately; browser preferences and desktop credentials live on each device. Protect backups as sensitive data and set a retention policy for them too.
 
 <p align="center">
   <img src="media/screenshots/app-server.jpg" alt="Server overview dashboard" width="860">
@@ -200,7 +202,7 @@ The server keeps its state in one SQLite data directory (`/var/lib/cybercord` in
 | `CYBERCORD_HTTP_ADDRESS` | `0.0.0.0:8080` | HTTP listen address |
 | `CYBERCORD_DATA_DIR` | `/var/lib/cybercord` | SQLite + mutable state |
 | `CYBERCORD_REGISTRATION_MODE` | `invite` | `closed` / `invite` / `open` |
-| `CYBERCORD_SESSION_TTL` | `never` | Session lifetime (max 30d) |
+| `CYBERCORD_SESSION_TTL` | `never` | No automatic expiry by default; optionally set a duration such as `24h`, up to 30 days; revocation still applies |
 | `CYBERCORD_SECURE_COOKIES` | `false` | HTTPS-only session cookie; the Compose stack sets this to `true` |
 | `CYBERCORD_TRUSTED_PROXY_CIDRS` | empty | Proxies allowed to supply client addresses; Compose trusts only its fixed Caddy address |
 | `CYBERCORD_VOICE_RESILIENCE_ENABLED` | binary: `false`; Compose: `true` | Advertise the 2.1 voice recovery and adaptive controls; set `false` to disable without turning off ordinary room voice |
@@ -234,6 +236,12 @@ Open **Settings → Audio → Voice bandwidth**:
 
 The voice diagnostics panel reports the current codec, requested rate and (when confirmed) effective rate, and buffer state. Recovery keeps Opus when the codec remains compatible, and it retains mute/deafen during reconnects. This improves control and recovery, but it is not a guarantee on weak networks, acoustic quality, or unqualified physical devices.
 
+### Themes and appearance in 2.1.3
+
+Open **Settings → Appearance** as any member. Choose CyberCord Neon, Dracula, Nord, Catppuccin Mocha, Tokyo Night, Gruvbox Dark, Solarized Dark, One Light, Rosé Pine, GitHub Light, or Monokai. These are accessibility-adjusted adaptations, not a claim of affiliation with their namesakes or a complete accessibility certification.
+
+Themes cover the workspace and controls, not just an accent color. Your choice is saved per account/server in the current browser or desktop webview; it is **not synchronized across devices**. Switching themes does not restart voice or sharing and keeps unsent drafts. You can dismiss the lobby welcome card and restore it from Appearance.
+
 ### Unread, mentions, and notifications
 
 - Other rooms show an **accessible unread shimmer** plus bounded unread and mention counts; reduced-motion users still get the counts without the sweep animation.
@@ -248,11 +256,34 @@ The voice diagnostics panel reports the current codec, requested rate and (when 
 
 <br clear="all">
 
-**Privacy controls are room-level:** set a room to dissolve its messages after any number of hours or days — expired messages *and their attachments* are permanently deleted. Screen content relayed to a room stays ephemeral forever.
+**Privacy controls are room-level:** choose keep-forever or an expiry between one hour and 365 days. A periodic cleanup removes expired message records and cleans up unreferenced attachments; this is not an exact-deadline or secure-erasure guarantee. See the retention limits below.
+
+## ✦ Security and privacy
+
+### What CyberCord protects
+
+- **Accounts:** passwords are hashed with Argon2id and per-password salts; session tokens are opaque random values stored as digests on the server. Login/enrollment/password endpoints have bounded rate limits. Password changes and account suspension/re-enrollment invalidate existing access. Built-in MFA/2FA is not currently provided; use strong unique passwords.
+- **Browser sessions:** HttpOnly, SameSite session cookies, CSRF checks for authenticated changes, same-origin WebSocket checks, and a Content Security Policy help protect the app boundary. For internet use, enable HTTPS and `CYBERCORD_SECURE_COOKIES=true` as the included Compose stack does. Sessions do not expire automatically by default; sign out on shared devices or configure a bounded lifetime. These defenses are not a security certification or a substitute for a patched host/browser.
+- **Community access:** registration is invite-only by default after the first account claims ownership. Claim a new server before exposing it to untrusted visitors. Invitations are single-use and expire after 24 hours. Private rooms require explicit membership; messages, attachments and live media are authenticated and room-scoped. A room labeled public is available to server members, not anonymous internet users. Private-room membership does not hide content from the machine's operator.
+- **Deployment:** the public server image runs as a non-root user. The provided Compose stack exposes only Caddy's edge ports, isolates CyberCord on an internal backend network, and trusts only Caddy's fixed address for forwarded client IPs. Keep port 8080 private, trust only your actual proxies, restrict host/data access, apply updates, and back up before upgrades.
+
+### Trust, storage, and deletion limits
+
+**CyberCord is not end-to-end encrypted.** HTTPS/WSS protects traffic to the TLS endpoint; the CyberCord server processes message/file contents and decodes/mixes room audio. The server operator, anyone with host/storage access, and any TLS-terminating proxy must be trusted. The app does not provide built-in encryption at rest for its SQLite database or uploaded files; use encrypted disks/backups if required.
+
+Messages, uploads, profiles, account/session records and administrative activity are stored by your server. The bounded administrative activity log includes login outcomes and management/voice events, with a 90-day retention limit and count caps; self-hosting does not mean there is no metadata. Ordinary message deletion hides a message from users but is a soft delete, not an immediate database purge. Room expiry is a separate periodic cleanup. Neither operation erases old backups, SQLite/WAL or storage remnants, downloaded copies, screenshots, notifications, or another person's recording. Do not rely on it for forensic erasure.
+
+CyberCord does not record or persist **live voice or screen/camera streams**. Media is processed/buffered in memory for delivery; uploaded chat audio/video files are persistent attachments and follow room retention. Other participants and operators can still record or copy content outside the app.
+
+### Connections and device privacy
+
+Core chat/media does not require a CyberCord-hosted account, advertising tracker, or vendor analytics endpoint. **This does not mean zero external connections:** link previews and thumbnails can make server-side requests to linked sites (with public-address/SSRF protections), revealing the requested URL and server IP to those sites. Opening links contacts their destination. Your chosen DNS, reverse proxy/CDN, certificate authority and hosting provider have their own visibility and policies. The badges on this GitHub README are external images, not application telemetry.
+
+Microphone/camera/screen access uses browser/OS permissions. Browser/OS notifications are opt-in and can expose message information to your OS or lock screen; review system notification settings. Appearance/audio preferences are local browser data. Optional desktop auto-login stores credentials in the OS credential vault and makes them available to the registered server origin, so connect only to servers you trust and protect your OS login. Windows and Linux downloads are **unsigned**; macOS Apple Silicon v0.1.2 is Developer ID signed and notarized. Check release SHA-256 checksums; checksums verify bytes, not a security audit.
 
 ## ✦ Optional Client Binaries
 
-The browser interface is all you need — but native desktop clients add a server manager and OS-keychain credential vault with auto-login. Point one at any CyberCord server, yours or a friend's. CyberCord 2.1.2 is a server/WebUI update: update the server, then reload the browser/PWA or restart the desktop shell so it pulls the current interface.
+The browser interface is all you need — but native desktop clients add a server manager and OS-keychain credential vault with auto-login. Point one at any CyberCord server you trust, yours or a friend's. CyberCord 2.1.3 is a server/WebUI update: update the server, then reload the browser/PWA or restart the desktop shell so it pulls the current interface.
 
 | Platform | Download | Notes |
 |---|---|---|
@@ -261,7 +292,7 @@ The browser interface is all you need — but native desktop clients add a serve
 | Debian / Ubuntu (amd64) | [DEB](https://github.com/RamboRogers/cybercordnow/releases/download/v2.0.0/CyberCord-Desktop-Debian-amd64.deb) | **Unchanged for 2.1** — native Debian v2.0.0 package |
 | Arch Linux (x86_64) | [PKG.TAR.ZST](https://github.com/RamboRogers/cybercordnow/releases/download/v2.0.0/CyberCord-Desktop-Arch-x86_64.pkg.tar.zst) | **Unchanged for 2.1** — native Arch v2.0.0 package |
 
-Release matrix: server/WebUI 2.1.2; Windows/Linux desktop [`v2.0.0`](https://github.com/RamboRogers/cybercordnow/releases/tag/v2.0.0) unchanged; macOS [`v0.1.2`](https://github.com/RamboRogers/cybercordnow/releases/tag/v0.1.2) retained. [Windows/Linux v2.0.0 SHA-256 checksums](https://github.com/RamboRogers/cybercordnow/releases/download/v2.0.0/SHA256SUMS.txt) · [Prior macOS SHA-256 checksums](https://github.com/RamboRogers/cybercordnow/releases/download/v0.1.2/SHA256SUMS.txt)
+Release matrix: server/WebUI 2.1.3; Windows/Linux desktop [`v2.0.0`](https://github.com/RamboRogers/cybercordnow/releases/tag/v2.0.0) unchanged; macOS [`v0.1.2`](https://github.com/RamboRogers/cybercordnow/releases/tag/v0.1.2) retained. [Windows/Linux v2.0.0 SHA-256 checksums](https://github.com/RamboRogers/cybercordnow/releases/download/v2.0.0/SHA256SUMS.txt) · [Prior macOS SHA-256 checksums](https://github.com/RamboRogers/cybercordnow/releases/download/v0.1.2/SHA256SUMS.txt)
 
 First launch: **Servers → Add Server…**, enter your server URL, Connect.
 
