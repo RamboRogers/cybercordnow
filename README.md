@@ -22,15 +22,16 @@ Keep your community on infrastructure you control. Room history can expire on a 
 
 ## ✦ 2.1 Highlights
 
-**No client changes are needed: 2.1.3 is a server update.** Existing clients load the
+**No client changes are needed: 2.1.4 is a server update.** Existing clients load the
 updated interface from your server; reload or restart them after the server upgrade.
 
+- **Quiet voice recovery** — fixed spurious “Joined voice” and “Left voice” announcements during automatic reconnection; genuine voice-session starts and ends still announce.
 - **Voice bandwidth you control** — Settings → Audio → Voice bandwidth includes **Low bandwidth — selected**, which holds Opus at 12 kbps up and 12 kbps down until you switch back to Auto; CPU Light stays an independent performance choice.
 - **Eleven complete themes** — Settings → Appearance is available to every member, with dark and light choices, clearer labeled controls, visible keyboard focus, and reduced-motion support. Switching themes keeps voice, sharing, and unsent drafts intact.
 - **More reliable voice on uneven links** — Auto starts at normal quality instead of staying in low quality after short conversations; voice diagnostics show the live codec, rate, and buffer state; brief recovery keeps Opus when the codec still works and preserves mute/deafen instead of treating every pause as a disconnect.
 - **Readable unread activity** — other rooms get an accessible neon shimmer, bounded unread/mention counts, and reduced-motion behavior that keeps counts available without animation.
 - **Directed mentions and notifications** — type `@username` to complete current-room members, then CyberCord can show a directed toast and rate-limited ding; Settings → Notifications can opt in to browser/OS notifications after permission.
-- **Server-only update** — update the server/WebUI image to 2.1.3 and reload or restart existing browser tabs, PWAs, or desktop shells; Windows/Linux desktop v2.0.0 and macOS v0.1.2 downloads remain unchanged.
+- **Server-only update** — update the server/WebUI image to 2.1.4 and reload or restart existing browser tabs, PWAs, or desktop shells; Windows/Linux desktop v2.0.0 and macOS v0.1.2 downloads remain unchanged.
 
 Voice starts at normal quality without a bitrate ramp and can recover more promptly after verified healthy audio. Automatic audio adjustment and fixed Low bandwidth do not pause screen/camera sharing or attachment uploads. The old automatic “Protecting audio” control state is removed; stream details retain useful diagnostics. Automated and synthetic-browser results are not a physical-device, acoustic, Wi-Fi, or long-duration performance guarantee.
 
@@ -94,14 +95,14 @@ docker run -d \
   -e CYBERCORD_VOICE_RESILIENCE_ENABLED=true \
   -e CYBERCORD_VOICE_WORKER_ENABLED=true \
   -e CYBERCORD_VOICE_FEEDBACK_ENABLED=true \
-  ghcr.io/ramborogers/cybercord-server:2.1.3
+  ghcr.io/ramborogers/cybercord-server:2.1.4
 ```
 
 1. Open <http://localhost:8080>.
 2. **Claim the server** — the first account created becomes the owner.
 3. Stop it later with `docker stop cybercord`.
 
-The localhost binding is deliberately not public. Browser microphone, camera, and screen capture work on browser-recognized localhost, but a remotely accessible server needs HTTPS. The server binary defaults the advanced 2.1.3 voice-resilience gates to `false`; the Compose stack and `docker run` example set them to `true` explicitly so the 2.1 voice controls are active. Set any of the three variables to `false` and restart to roll that layer back.
+The localhost binding is deliberately not public. Browser microphone, camera, and screen capture work on browser-recognized localhost, but a remotely accessible server needs HTTPS. The server binary defaults the advanced 2.1.4 voice-resilience gates to `false`; the Compose stack and `docker run` example set them to `true` explicitly so the 2.1 voice controls are active. Set any of the three variables to `false` and restart to roll that layer back.
 
 ### Public home server with Caddy
 
@@ -140,7 +141,7 @@ Edit `.env` and set at least:
 ```dotenv
 CYBERCORD_DOMAIN=chat.example.com
 ACME_EMAIL=you@example.com
-CYBERCORD_IMAGE=ghcr.io/ramborogers/cybercord-server:2.1.3
+CYBERCORD_IMAGE=ghcr.io/ramborogers/cybercord-server:2.1.4
 CYBERCORD_VOICE_RESILIENCE_ENABLED=true
 CYBERCORD_VOICE_WORKER_ENABLED=true
 CYBERCORD_VOICE_FEEDBACK_ENABLED=true
@@ -185,7 +186,7 @@ docker compose pull
 docker compose up -d
 ```
 
-The immutable, versioned `ghcr.io/ramborogers/cybercord-server:2.1.3` tag is recommended for repeatable deployments. `ghcr.io/ramborogers/cybercord-server:latest` tracks the newest verified public server release.
+The immutable, versioned `ghcr.io/ramborogers/cybercord-server:2.1.4` tag is recommended for repeatable deployments. `ghcr.io/ramborogers/cybercord-server:latest` tracks the newest verified public server release.
 
 View status and logs with `docker compose ps` and `docker compose logs`. `docker compose down` removes the containers and networks but preserves the named data and certificate volumes. **Do not run `docker compose down -v` unless you intend to delete the CyberCord database and Caddy's TLS state.**
 
@@ -283,7 +284,7 @@ Microphone/camera/screen access uses browser/OS permissions. Browser/OS notifica
 
 ## ✦ Optional Client Binaries
 
-The browser interface is all you need — but native desktop clients add a server manager and OS-keychain credential vault with auto-login. Point one at any CyberCord server you trust, yours or a friend's. CyberCord 2.1.3 is a server/WebUI update: update the server, then reload the browser/PWA or restart the desktop shell so it pulls the current interface.
+The browser interface is all you need — but native desktop clients add a server manager and OS-keychain credential vault with auto-login. Point one at any CyberCord server you trust, yours or a friend's. CyberCord 2.1.4 is a server/WebUI update: update the server, then reload the browser/PWA or restart the desktop shell so it pulls the current interface.
 
 | Platform | Download | Notes |
 |---|---|---|
@@ -292,7 +293,7 @@ The browser interface is all you need — but native desktop clients add a serve
 | Debian / Ubuntu (amd64) | [DEB](https://github.com/RamboRogers/cybercordnow/releases/download/v2.0.0/CyberCord-Desktop-Debian-amd64.deb) | **Unchanged for 2.1** — native Debian v2.0.0 package |
 | Arch Linux (x86_64) | [PKG.TAR.ZST](https://github.com/RamboRogers/cybercordnow/releases/download/v2.0.0/CyberCord-Desktop-Arch-x86_64.pkg.tar.zst) | **Unchanged for 2.1** — native Arch v2.0.0 package |
 
-Release matrix: server/WebUI 2.1.3; Windows/Linux desktop [`v2.0.0`](https://github.com/RamboRogers/cybercordnow/releases/tag/v2.0.0) unchanged; macOS [`v0.1.2`](https://github.com/RamboRogers/cybercordnow/releases/tag/v0.1.2) retained. [Windows/Linux v2.0.0 SHA-256 checksums](https://github.com/RamboRogers/cybercordnow/releases/download/v2.0.0/SHA256SUMS.txt) · [Prior macOS SHA-256 checksums](https://github.com/RamboRogers/cybercordnow/releases/download/v0.1.2/SHA256SUMS.txt)
+Release matrix: server/WebUI 2.1.4; Windows/Linux desktop [`v2.0.0`](https://github.com/RamboRogers/cybercordnow/releases/tag/v2.0.0) unchanged; macOS [`v0.1.2`](https://github.com/RamboRogers/cybercordnow/releases/tag/v0.1.2) retained. [Windows/Linux v2.0.0 SHA-256 checksums](https://github.com/RamboRogers/cybercordnow/releases/download/v2.0.0/SHA256SUMS.txt) · [Prior macOS SHA-256 checksums](https://github.com/RamboRogers/cybercordnow/releases/download/v0.1.2/SHA256SUMS.txt)
 
 First launch: **Servers → Add Server…**, enter your server URL, Connect.
 
