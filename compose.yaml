@@ -2,7 +2,7 @@ name: cybercord
 
 services:
   cybercord:
-    image: "${CYBERCORD_IMAGE:-ghcr.io/ramborogers/cybercord-server:2.1.4}"
+    image: "${CYBERCORD_IMAGE:-ghcr.io/ramborogers/cybercord-server:2.1.5}"
     platform: linux/amd64
     restart: unless-stopped
     environment:
@@ -11,6 +11,8 @@ services:
       CYBERCORD_REGISTRATION_MODE: invite
       CYBERCORD_SESSION_TTL: never
       CYBERCORD_SECURE_COOKIES: "true"
+      CYBERCORD_PUBLIC_ORIGIN: "https://${CYBERCORD_DOMAIN:?Set CYBERCORD_DOMAIN in .env}"
+      CYBERCORD_MEETINGS_ENABLED: "${CYBERCORD_MEETINGS_ENABLED:-true}"
       CYBERCORD_TRUSTED_PROXY_CIDRS: "${CADDY_INTERNAL_IP:-172.30.239.2}/32"
       CYBERCORD_VOICE_RESILIENCE_ENABLED: "${CYBERCORD_VOICE_RESILIENCE_ENABLED:-true}"
       CYBERCORD_VOICE_WORKER_ENABLED: "${CYBERCORD_VOICE_WORKER_ENABLED:-true}"

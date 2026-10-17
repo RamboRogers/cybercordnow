@@ -16,22 +16,22 @@
   <img src="media/screenshots/app-lobby.jpg" alt="CyberCord workspace — rooms, voice, and chat" width="860">
 </p>
 
-CyberCord is a self-hosted room platform that runs in **a single container from a single self-contained binary**. `docker run` it, open the URL, claim it — that's the whole setup. It serves its own interface to desktop and mobile browsers, offers optional native desktop clients, and carries text, files, voice, and video through **one HTTPS endpoint**.
+CyberCord is a self-hosted room and meetings platform that runs in **a single container from a single self-contained binary**. `docker run` it, open the URL, claim it — that's the whole setup. It serves its own interface to desktop and mobile browsers, offers optional native desktop clients, and carries text, files, voice, video, and meetings through **one HTTPS endpoint**.
 
 Keep your community on infrastructure you control. Room history can expire on a timer, and CyberCord does not record live voice or screen/camera shares. Self-hosting is a trust choice, not end-to-end encryption: see [Security and privacy](#-security-and-privacy) for the protections and their limits.
 
 ## ✦ 2.1 Highlights
 
-**No client changes are needed: 2.1.4 is a server update.** Existing clients load the
+**No client changes are needed: 2.1.5 is a server update.** Existing clients load the
 updated interface from your server; reload or restart them after the server upgrade.
 
+- **The Meetings Release** — a zero-friction, private, self-hosted replacement for ordinary meeting products. Start a disposable meeting and share one link; guests join with only a display name, with no account, installation, calendar setup, or waiting room. Signed-in members keep the normal CyberCord experience. The first incoming shared screen fills the compact viewer automatically while preserving its aspect ratio, and Focus supports 100–400% zoom and pan. Share audio starts muted until someone explicitly chooses Unmute. Only the creator can End the meeting for everyone: End closes guest access and deletes meeting-scoped content, then guests see a clear closed screen and can close the tab. Meetings are encrypted in transit, not end-to-end encrypted. This is a server-only update to 2.1.5: reload or restart existing browser tabs, PWAs, or desktop shells; Windows/Linux desktop v2.0.0 and macOS v0.1.2 downloads remain unchanged. Meetings require your public HTTPS origin, secure cookies, and `CYBERCORD_MEETINGS_ENABLED=true`; changing the image alone does not enable them.
 - **Quiet voice recovery** — fixed spurious “Joined voice” and “Left voice” announcements during automatic reconnection; genuine voice-session starts and ends still announce.
 - **Voice bandwidth you control** — Settings → Audio → Voice bandwidth includes **Low bandwidth — selected**, which holds Opus at 12 kbps up and 12 kbps down until you switch back to Auto; CPU Light stays an independent performance choice.
 - **Eleven complete themes** — Settings → Appearance is available to every member, with dark and light choices, clearer labeled controls, visible keyboard focus, and reduced-motion support. Switching themes keeps voice, sharing, and unsent drafts intact.
 - **More reliable voice on uneven links** — Auto starts at normal quality instead of staying in low quality after short conversations; voice diagnostics show the live codec, rate, and buffer state; brief recovery keeps Opus when the codec still works and preserves mute/deafen instead of treating every pause as a disconnect.
 - **Readable unread activity** — other rooms get an accessible neon shimmer, bounded unread/mention counts, and reduced-motion behavior that keeps counts available without animation.
 - **Directed mentions and notifications** — type `@username` to complete current-room members, then CyberCord can show a directed toast and rate-limited ding; Settings → Notifications can opt in to browser/OS notifications after permission.
-- **Server-only update** — update the server/WebUI image to 2.1.4 and reload or restart existing browser tabs, PWAs, or desktop shells; Windows/Linux desktop v2.0.0 and macOS v0.1.2 downloads remain unchanged.
 
 Voice starts at normal quality without a bitrate ramp and can recover more promptly after verified healthy audio. Automatic audio adjustment and fixed Low bandwidth do not pause screen/camera sharing or attachment uploads. The old automatic “Protecting audio” control state is removed; stream details retain useful diagnostics. Automated and synthetic-browser results are not a physical-device, acoustic, Wi-Fi, or long-duration performance guarantee.
 
@@ -41,7 +41,7 @@ Voice starts at normal quality without a bitrate ramp and can recover more promp
 
 | | |
 |---|---|
-| 🧐 **Privacy first** | Optional room-history expiry and live-only media, with explicit retention and trust boundaries below |
+| 🧐 **Privacy first** | Disposable meetings, optional room-history expiry, and live-only media, with explicit retention and trust boundaries below |
 | 🔒 **Secure** | Argon2id passwords, opaque sessions, CSRF protection, flood control, invite-only by default |
 | 🧑‍💻 **Local** | Your server, your hardware, your data. No CyberCord cloud account or vendor analytics service required |
 | 📦 **Tiny** | One container, one self-contained Go binary, embedded browser UI — pure-Go SQLite, no external database |
@@ -50,6 +50,7 @@ Voice starts at normal quality without a bitrate ramp and can recover more promp
 
 ## ✦ Key Features
 
+- **The Meetings Release** — a zero-friction, private, self-hosted replacement for ordinary meeting products: link plus display name, automatic focused screen viewing, and creator-only secure End
 - **Rooms with multiple webcams and desktop streaming users at once**
 - **Text chat with rich media and directed mentions** — video, files, images, emoji reactions, accessible unread counts, and `@username` room-member completion
 - **Rooms with privacy settings** — public or private with explicit membership lists
@@ -95,14 +96,14 @@ docker run -d \
   -e CYBERCORD_VOICE_RESILIENCE_ENABLED=true \
   -e CYBERCORD_VOICE_WORKER_ENABLED=true \
   -e CYBERCORD_VOICE_FEEDBACK_ENABLED=true \
-  ghcr.io/ramborogers/cybercord-server:2.1.4
+  ghcr.io/ramborogers/cybercord-server:2.1.5
 ```
 
 1. Open <http://localhost:8080>.
 2. **Claim the server** — the first account created becomes the owner.
 3. Stop it later with `docker stop cybercord`.
 
-The localhost binding is deliberately not public. Browser microphone, camera, and screen capture work on browser-recognized localhost, but a remotely accessible server needs HTTPS. The server binary defaults the advanced 2.1.4 voice-resilience gates to `false`; the Compose stack and `docker run` example set them to `true` explicitly so the 2.1 voice controls are active. Set any of the three variables to `false` and restart to roll that layer back.
+The localhost binding is deliberately not public. Browser microphone, camera, and screen capture work on browser-recognized localhost, but a remotely accessible server needs HTTPS. The server binary defaults the advanced 2.1.5 voice-resilience gates to `false`; the Compose stack and `docker run` example set them to `true` explicitly so the 2.1 voice controls are active. Set any of the three variables to `false` and restart to roll that layer back.
 
 ### Public home server with Caddy
 
@@ -141,10 +142,12 @@ Edit `.env` and set at least:
 ```dotenv
 CYBERCORD_DOMAIN=chat.example.com
 ACME_EMAIL=you@example.com
-CYBERCORD_IMAGE=ghcr.io/ramborogers/cybercord-server:2.1.4
+CYBERCORD_IMAGE=ghcr.io/ramborogers/cybercord-server:2.1.5
 CYBERCORD_VOICE_RESILIENCE_ENABLED=true
 CYBERCORD_VOICE_WORKER_ENABLED=true
 CYBERCORD_VOICE_FEEDBACK_ENABLED=true
+CYBERCORD_PUBLIC_ORIGIN=https://chat.example.com
+CYBERCORD_MEETINGS_ENABLED=true
 ```
 
 The internal-network values normally need no changes. If Docker reports an overlapping address pool, choose another private `/24` subnet and keep both internal IPs inside it and distinct from each other. The three voice-resilience values are reversible deployment switches; set one to `false` and restart if you need to compare or roll back that path without replacing the server image.
@@ -186,7 +189,7 @@ docker compose pull
 docker compose up -d
 ```
 
-The immutable, versioned `ghcr.io/ramborogers/cybercord-server:2.1.4` tag is recommended for repeatable deployments. `ghcr.io/ramborogers/cybercord-server:latest` tracks the newest verified public server release.
+The immutable, versioned `ghcr.io/ramborogers/cybercord-server:2.1.5` tag is recommended for repeatable deployments. `ghcr.io/ramborogers/cybercord-server:latest` tracks the newest verified public server release.
 
 View status and logs with `docker compose ps` and `docker compose logs`. `docker compose down` removes the containers and networks but preserves the named data and certificate volumes. **Do not run `docker compose down -v` unless you intend to delete the CyberCord database and Caddy's TLS state.**
 
@@ -284,7 +287,7 @@ Microphone/camera/screen access uses browser/OS permissions. Browser/OS notifica
 
 ## ✦ Optional Client Binaries
 
-The browser interface is all you need — but native desktop clients add a server manager and OS-keychain credential vault with auto-login. Point one at any CyberCord server you trust, yours or a friend's. CyberCord 2.1.4 is a server/WebUI update: update the server, then reload the browser/PWA or restart the desktop shell so it pulls the current interface.
+The browser interface is all you need — but native desktop clients add a server manager and OS-keychain credential vault with auto-login. Point one at any CyberCord server you trust, yours or a friend's. CyberCord 2.1.5 is a server/WebUI update: update the server, then reload the browser/PWA or restart the desktop shell so it pulls the current interface.
 
 | Platform | Download | Notes |
 |---|---|---|
@@ -293,7 +296,7 @@ The browser interface is all you need — but native desktop clients add a serve
 | Debian / Ubuntu (amd64) | [DEB](https://github.com/RamboRogers/cybercordnow/releases/download/v2.0.0/CyberCord-Desktop-Debian-amd64.deb) | **Unchanged for 2.1** — native Debian v2.0.0 package |
 | Arch Linux (x86_64) | [PKG.TAR.ZST](https://github.com/RamboRogers/cybercordnow/releases/download/v2.0.0/CyberCord-Desktop-Arch-x86_64.pkg.tar.zst) | **Unchanged for 2.1** — native Arch v2.0.0 package |
 
-Release matrix: server/WebUI 2.1.4; Windows/Linux desktop [`v2.0.0`](https://github.com/RamboRogers/cybercordnow/releases/tag/v2.0.0) unchanged; macOS [`v0.1.2`](https://github.com/RamboRogers/cybercordnow/releases/tag/v0.1.2) retained. [Windows/Linux v2.0.0 SHA-256 checksums](https://github.com/RamboRogers/cybercordnow/releases/download/v2.0.0/SHA256SUMS.txt) · [Prior macOS SHA-256 checksums](https://github.com/RamboRogers/cybercordnow/releases/download/v0.1.2/SHA256SUMS.txt)
+Release matrix: server/WebUI 2.1.5; Windows/Linux desktop [`v2.0.0`](https://github.com/RamboRogers/cybercordnow/releases/tag/v2.0.0) unchanged; macOS [`v0.1.2`](https://github.com/RamboRogers/cybercordnow/releases/tag/v0.1.2) retained. [Windows/Linux v2.0.0 SHA-256 checksums](https://github.com/RamboRogers/cybercordnow/releases/download/v2.0.0/SHA256SUMS.txt) · [Prior macOS SHA-256 checksums](https://github.com/RamboRogers/cybercordnow/releases/download/v0.1.2/SHA256SUMS.txt)
 
 First launch: **Servers → Add Server…**, enter your server URL, Connect.
 
